@@ -1,0 +1,36 @@
+FROM alpine:3.13
+
+RUN set -x \
+ && apk add --no-cache --virtual .persistent-deps ca-certificates curl mariadb-connector-c gettext \
+ && apk add --no-cache --virtual .build-deps git build-base mariadb-connector-c-dev \
+ && git clone https://github.com/proftpd/proftpd.git \
+ && git clone https://github.com/Castaglia/proftpd-mod_vroot.git \
+ && cd proftpd-mod_vroot \
+ && git checkout tags/v0.9.5 \
+ && cd .. \
+ && mv proftpd-mod_vroot proftpd/contrib/mod_vroot \
+ && cd proftpd \
+ && sed -i 's/__mempcpy/mempcpy/g' lib/pr_fnmatch.c \
+ && ./configure --sysconfdir=/etc/proftpd --localstatedir=/var/proftpd \
+          --with-modules=mod_sql:mod_sql_mysql:mod_sql_passwd:mod_tls:mod_exec:mod_vroot:mod_sftp:mod_sftp_sql \
+          --enable-openssl --disable-ident --enable-nls \
+ && make \
+ && make install \
+ && cd ../ \
+ && rm -rf proftpd \
+ && apk del .build-deps
+
+COPY rootfs/ /
+
+RUN set -x \
+ && addgroup proftpd \
+ && adduser -H -D -G proftpd proftpd \
+ && chmod a+x /usr/local/bin/docker-entrypoint.sh \
+ && mkdir /var/log/proftpd
+
+# FTP ROOT
+#VOLUME /srv/ftp
+
+EXPOSE 21 49152-49407
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

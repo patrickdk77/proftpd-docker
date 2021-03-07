@@ -4,7 +4,7 @@
 
 - docker
 - (docker-compose)
-- PostgreSQL instance
+- MySQL instance
 - Creating the necessary tables on the PostgreSQL instance using the included migration: `sql/proftp_tables.sql`.
 - openssl (for creating passwords)
 
@@ -23,7 +23,7 @@ The required/optional parameters are described here after:
 - **FTP_DB_PASS**: db password, required
 - **FTP_DB_ADMIN**: db admin user, required if FTP_PG_MIGRATE=ON
 - **FTP_DB_ADMIN_PASS**: db admin password, required if FTP_PG_MIGRATE=ON
-- **FTP_PG_MIGRATE**: ON/OFF, activate/deactivate automatic creation of tables required by proftpd in postgresql database
+- **FTP_PG_MIGRATE**: ON/OFF, activate/deactivate automatic creation of tables required by proftpd in mysql database
 - **FTP_VERBOSE**: ON/UNDEF, activate/deactivate logging to files
 - **FTP_ROOT**: /path/to/ftp/root, optional, defaults to /data/ftp_root
 - **LOGS**: /path/to/log/dir, optional, defaults to /var/log/proftpd
