@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:groovy-20210614
 
 RUN set -e \
  && apt-get -y update \
