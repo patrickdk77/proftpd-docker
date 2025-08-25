@@ -5,7 +5,7 @@
 - docker
 - (docker-compose)
 - MySQL instance
-- Creating the necessary tables on the PostgreSQL instance using the included migration: `sql/proftp_tables.sql`.
+- Creating the necessary tables on the MySQL instance using the included migration: `sql/proftp_tables.sql`.
 - openssl (for creating passwords)
 
 ## Running with docker-compose, building image
@@ -42,15 +42,12 @@ docker-compose build
 docker-compose up -d
 ```
 
-### Configuring postgreSQL connection
+### Configuring MySQL connection
 Refer to this [link](http://www.proftpd.org/docs/howto/SQL.html) and on `sql/proftpd_tables.sql` file for detailed information on required SQL data model.
 
 The migration should be run by a user with owner privilege on the designated database. The script supposes a second user exists beforehand, whose privileges are managed by the migration.
 
-The `FTP_DB_HOST`, `FTP_DB_NAME`, `FTP_DB_USER` and `FTP_DB_PASS` env vars should be provided to the container to configure proftpd's connection with the postgreSQL instance.
-
-### Automatic migration
-Env vars `FTP_DB_ADMIN` and `FTP_DB_ADMIN_PASS` can also be provided combined with option `FTP_PG_MIGRATE=ON` to automatically create the tables required by proftpd in the postgreSQL database.
+The `FTP_DB_HOST`, `FTP_DB_NAME`, `FTP_DB_USER` and `FTP_DB_PASS` env vars should be provided to the container to configure proftpd's connection with the MySQL instance.
 
 ### Create users and groups
 First create a group, or make sure an appropriate group already exists. The main attributes for groups are:
@@ -158,7 +155,6 @@ Following the previous sections, a number a env vars and volumes needs to be spe
   - `FTP_DB_PASS`
   - `FTP_DB_ADMIN`
   - `FTP_DB_ADMIN_PASS`
-  - `FTP_PG_MIGRATE`
   - `FTP_VERBOSE`
   - `MASQ_ADDR`
   - `MOD_TLS`

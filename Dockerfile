@@ -4,8 +4,8 @@ ARG PROFTPD_VERSION VROOT_VERSION
 RUN set -e \
  && apt-get -y update \
  && apt-get -y install git curl libmysqlclient-dev build-essential libssl-dev libpq-dev openssl gettext-base \
- && git clone --single-branch --branch ${PROFTP_VERSION} https://github.com/proftpd/proftpd.git \
- && git clone --single-branch --branch ${VROOT_VERSION} https://github.com/Castaglia/proftpd-mod_vroot.git \
+ && git clone -j8 --depth 1 --branch ${PROFTPD_VERSION} https://github.com/proftpd/proftpd.git \
+ && git clone -j8 --depth 1 --branch ${VROOT_VERSION} https://github.com/Castaglia/proftpd-mod_vroot.git \
  && mv proftpd-mod_vroot proftpd/contrib/mod_vroot \
  && true
  

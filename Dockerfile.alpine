@@ -3,10 +3,9 @@ FROM alpine
 ARG PROFTPD_VERSION VROOT_VERSION
 RUN set -x \
  && apk add --no-cache --virtual .persistent-deps ca-certificates curl mariadb-connector-c gettext \
- && apk add --no-cache --virtual .build-deps git build-base mariadb-connector-c-dev \
- && git clone --single-branch --branch ${PROFTP_VERSION} https://github.com/proftpd/proftpd.git \
- && git clone --single-branch --branch ${VROOT_VERSION} https://github.com/Castaglia/proftpd-mod_vroot.git \
- && cd proftpd-mod_vroot \
+ && apk add --no-cache --virtual .build-deps git build-base mariadb-connector-c-dev gettext-dev \
+ && git clone -j8 --depth 1 --branch ${PROFTPD_VERSION} https://github.com/proftpd/proftpd.git \
+ && git clone -j8 --depth 1 --branch ${VROOT_VERSION} https://github.com/Castaglia/proftpd-mod_vroot.git \
  && mv proftpd-mod_vroot proftpd/contrib/mod_vroot \
  && cd proftpd \
  && sed -i 's/__mempcpy/mempcpy/g' lib/pr_fnmatch.c \
