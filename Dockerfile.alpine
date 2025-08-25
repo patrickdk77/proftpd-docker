@@ -1,13 +1,12 @@
-FROM alpine:3.13
+FROM alpine
 
+ARG PROFTPD_VERSION VROOT_VERSION
 RUN set -x \
  && apk add --no-cache --virtual .persistent-deps ca-certificates curl mariadb-connector-c gettext \
  && apk add --no-cache --virtual .build-deps git build-base mariadb-connector-c-dev \
- && git clone https://github.com/proftpd/proftpd.git \
- && git clone https://github.com/Castaglia/proftpd-mod_vroot.git \
+ && git clone --single-branch --branch ${PROFTP_VERSION} https://github.com/proftpd/proftpd.git \
+ && git clone --single-branch --branch ${VROOT_VERSION} https://github.com/Castaglia/proftpd-mod_vroot.git \
  && cd proftpd-mod_vroot \
- && git checkout tags/v0.9.5 \
- && cd .. \
  && mv proftpd-mod_vroot proftpd/contrib/mod_vroot \
  && cd proftpd \
  && sed -i 's/__mempcpy/mempcpy/g' lib/pr_fnmatch.c \
@@ -31,6 +30,29 @@ RUN set -x \
 # FTP ROOT
 #VOLUME /srv/ftp
 
+HEALTHCHECK --timeout=10s --start-period=10s CMD ftpwho
+
 EXPOSE 21 49152-49407
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+
+ARG BUILD_DATE BUILD_REF BUILD_VERSION PROFTPD_VERSION VROOT_VERSION
+LABEL maintainer="Patrick Domack (patrickdk@patrickdk.com)" \
+  Description="Lightweight container for ProFTPD based on Alpine Linux." \
+  org.label-schema.schema-version="1.0" \
+  org.label-schema.build-date="${BUILD_DATE}" \
+  org.label-schema.name="proftpd-docker" \
+  org.label-schema.description="ProFTPD alpine base image" \
+  org.label-schema.url="https://github.com/patrickdk77/proftpd-docker/" \
+  org.label-schema.usage="https://github.com/patrickdk77/proftpd-docker/tree/master/README.md" \
+  org.label-schema.vcs-url="https://github.com/patrickdk77/proftpd-docker" \
+  org.label-schema.vcs-ref="${BUILD_REF}" \
+  org.label-schema.version="${BUILD_VERSION}" \
+  org.opencontainers.image.authors="Patrick Domack (patrickdk@patrickdk.com)" \
+  org.opencontainers.image.created="${BUILD_DATE}" \
+  org.opencontainers.image.title="proftpd-docker" \
+  org.opencontainers.image.description="ProFTPD alpine image" \
+  org.opencontainers.image.version="${BUILD_VERSION}" \
+  version="${BUILD_VERSION}" \
+  proftpd_version="${PROFTPD_VERSION}"
+
