@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:24.04
 
 ARG PROFTPD_VERSION VROOT_VERSION
 RUN set -e \
